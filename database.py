@@ -38,4 +38,8 @@ def select_books_info():
     res = cursor.fetchall()
     return res
 
-print(select_books_info())
+def select_book_detail(ISBN):
+    sql_select_book_detail = f'select *from books_info where ISBN="{ISBN}";'
+    cursor.execute(sql_select_book_detail)
+    res = cursor.fetchone()
+    return res

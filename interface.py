@@ -94,7 +94,39 @@ def get_books():
             "data":data
         }
         return response_msg
-        
+
+"""
+获取书籍详细信息
+POST
+in:ISBN
+"""
+@app.route('/book/detail',methods=['POST'])
+def get_book_detail():
+    if request.method == "POST":
+        ISBN = request.json.get("ISBN")
+        msg = None
+        data = []
+        try:
+            book_detail = database.select_book_detail(ISBN)
+            book = {
+                "ISBN": book_detail[0],
+                "cover_img": book_detail[1],
+                "name": book_detail[2],
+                "press": book_detail[3],
+                "author": book_detail[4],
+                "collection": book_detail[5],
+                "can_borrow": book_detail[6]
+            }
+            data.append(book)
+            msg = "success"
+        except:
+            msg = "error"
+        response_msg = {
+            "msg":msg,
+            "data":data
+        }
+        return response_msg
+
 if __name__ == "__main__":
     server = pywsgi.WSGIServer(('0.0.0.0',port),app)
     server.serve_forever()
