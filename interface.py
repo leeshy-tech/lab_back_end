@@ -72,7 +72,7 @@ GET
 def get_books():
     if request.method == "GET":
         msg = None
-        books_info = []
+        book_info_list = []
         try:
             books_info_list = database.select_books_info()
             for books in books_info_list:
@@ -85,13 +85,13 @@ def get_books():
                     "collection": books[5],
                     "can_borrow": books[6]
                 }
-                books_info.append(book)
+                book_info_list.append(book)
             msg = "success"
         except:
             msg = "error"
         response_msg = {
             "msg":msg,
-            "books_info":books_info
+            "book_info_list":book_info_list
         }
         return response_msg
 
@@ -105,7 +105,7 @@ def get_book_detail():
     if request.method == "POST":
         ISBN = request.json.get("ISBN")
         msg = None
-        books_info = []
+        book_info_list = []
         try:
             book_detail = database.select_book_detail(ISBN)
             book = {
@@ -117,13 +117,13 @@ def get_book_detail():
                 "collection": book_detail[5],
                 "can_borrow": book_detail[6]
             }
-            books_info.append(book)
+            book_info_list.append(book)
             msg = "success"
         except:
             msg = "error"
         response_msg = {
             "msg":msg,
-            "books_info":books_info
+            "book_info_list":book_info_list
         }
         return response_msg
 
