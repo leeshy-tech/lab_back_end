@@ -43,3 +43,9 @@ def select_book_detail(ISBN):
     cursor.execute(sql_select_book_detail)
     res = cursor.fetchone()
     return res
+
+def select_book_store(ISBN):
+    sql_select_book_store = f'select lib,shelf,state from books_list where ISBN="{ISBN}"'
+    cursor.execute(sql_select_book_store)
+    res = cursor.fetchall()
+    return res

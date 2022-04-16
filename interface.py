@@ -127,6 +127,35 @@ def get_book_detail():
         }
         return response_msg
 
+"""
+获取馆藏信息
+POST
+in:ISBN
+"""
+@app.route('/book/store',methods=['POST'])
+def get_book_store():
+    if request.method == "POST":
+        ISBN = request.json.get("ISBN")
+        msg = None
+        books_store = []
+        try:
+            book_store_list = database.select_book_store(ISBN)
+            for book_store in book_store_list:
+                book_store_set = {
+                    "lib":book_store[0],
+                    "shelf":book_store[1],
+                    "state":book_store[2]
+                }
+                books_store.append(book_store_set)
+            msg = "success"
+        except:
+            msg = "error"
+        response_msg = {
+            "msg":msg,
+            "books_store":books_store
+        }
+        return response_msg
+
 if __name__ == "__main__":
     server = pywsgi.WSGIServer(('0.0.0.0',port),app)
     server.serve_forever()
