@@ -3,6 +3,7 @@ from flask_cors import CORS
 from gevent import pywsgi
 import database
 from aToken import token_encode,token_decode
+import data
 
 port = 8899
 app = Flask(__name__)
@@ -153,6 +154,38 @@ def get_book_store():
         response_msg = {
             "msg":msg,
             "books_store":books_store
+        }
+        return response_msg
+
+"""
+获取书籍分类
+GET
+"""
+@app.route('/book/category',methods=['GET'])
+def get_book_category():
+    if request.method == "GET":
+        msg = None
+        book_category = []  
+
+        try:
+            for category1 in data.category.keys():
+                category12 = {
+                    "category1":"",
+                    "category2":[]
+                }
+                category12["category1"] = category1
+                category2_list = data.category[category1]
+                for (id,category2) in category2_list:
+                    category12["category2"].append(category2)
+                book_category.append(category12)
+            msg = "success"
+
+        except:
+            msg = "error"
+            
+        response_msg = {
+            "msg":msg,
+            "book_category":book_category
         }
         return response_msg
 
