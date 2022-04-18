@@ -79,12 +79,13 @@ def get_books():
             for books in books_info_list:
                 book = {
                     "ISBN": books[0],
-                    "cover_img": books[1],
-                    "name": books[2],
-                    "press": books[3],
-                    "author": books[4],
-                    "collection": books[5],
-                    "can_borrow": books[6]
+                    "category":books[1],
+                    "cover_img": books[2],
+                    "name": books[3],
+                    "press": books[4],
+                    "author": books[5],
+                    "collection": books[6],
+                    "can_borrow": books[7]
                 }
                 book_info_list.append(book)
             msg = "success"
@@ -107,21 +108,20 @@ def get_book_detail():
         ISBN = request.json.get("ISBN")
         msg = None
         book_info_list = []
-        try:
-            book_detail = database.select_book_detail(ISBN)
-            book = {
-                "ISBN": book_detail[0],
-                "cover_img": book_detail[1],
-                "name": book_detail[2],
-                "press": book_detail[3],
-                "author": book_detail[4],
-                "collection": book_detail[5],
-                "can_borrow": book_detail[6]
-            }
-            book_info_list.append(book)
-            msg = "success"
-        except:
-            msg = "error"
+
+        book_detail = database.select_book_detail(ISBN)
+        book = {
+            "ISBN": book_detail[0],
+            "category":book_detail[1],
+            "cover_img": book_detail[2],
+            "name": book_detail[3],
+            "press": book_detail[4],
+            "author": book_detail[5],
+            "collection": book_detail[6],
+            "can_borrow": book_detail[7]
+        }
+        book_info_list.append(book)
+        msg = "success"
         response_msg = {
             "msg":msg,
             "book_info_list":book_info_list
@@ -205,12 +205,51 @@ def search_book():
             if books[3] == keyword:
                 book = {
                     "ISBN": books[0],
-                    "cover_img": books[1],
-                    "name": books[2],
-                    "press": books[3],
-                    "author": books[4],
-                    "collection": books[5],
-                    "can_borrow": books[6]
+                    "category":books[1],
+                    "cover_img": books[2],
+                    "name": books[3],
+                    "press": books[4],
+                    "author": books[5],
+                    "collection": books[6],
+                    "can_borrow": books[7]
+                }
+                book_info_list.append(book)
+        msg = "success"
+        response_msg = {
+            "msg":msg,
+            "book_info_list":book_info_list
+        }
+        return response_msg
+"""
+分类搜索
+POST
+in:category
+"""
+@app.route('/book/search_category',methods=['POST'])
+def search_book_category():
+    if request.method == "POST":
+        category = request.json.get("category")
+        print("category=" + category)
+        for category_item in data.category.keys():
+            for (id,category2) in data.category[category_item]:
+                if category2 == category:
+                    print("id=" + id)
+                    category = id
+
+        msg = None
+        book_info_list = []
+        books_info_list = database.select_books_info()
+        for books in books_info_list:
+            if books[1] == category:
+                book = {
+                    "ISBN": books[0],
+                    "category":books[1],
+                    "cover_img": books[2],
+                    "name": books[3],
+                    "press": books[4],
+                    "author": books[5],
+                    "collection": books[6],
+                    "can_borrow": books[7]
                 }
                 book_info_list.append(book)
         msg = "success"
