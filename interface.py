@@ -188,6 +188,38 @@ def get_book_category():
             "book_category":book_category
         }
         return response_msg
+"""
+关键字搜索
+POST
+in:keyword
+"""
+@app.route('/book/search',methods=['POST'])
+def search_book():
+    if request.method == "POST":
+        keyword = request.json.get("keyword")
+        print("keyword=" + keyword)
+        msg = None
+        book_info_list = []
+        books_info_list = database.select_books_info()
+        for books in books_info_list:
+            if books[3] == keyword:
+                book = {
+                    "ISBN": books[0],
+                    "cover_img": books[1],
+                    "name": books[2],
+                    "press": books[3],
+                    "author": books[4],
+                    "collection": books[5],
+                    "can_borrow": books[6]
+                }
+                book_info_list.append(book)
+        msg = "success"
+        response_msg = {
+            "msg":msg,
+            "book_info_list":book_info_list
+        }
+        return response_msg
+
 
 if __name__ == "__main__":
     server = pywsgi.WSGIServer(('0.0.0.0',port),app)

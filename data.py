@@ -1,3 +1,7 @@
+database_user = "root"
+database_password = "lisai430094"
+database_table = "user"
+
 # 中国图书馆分类法
 category = {
     "马列毛邓":[

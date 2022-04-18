@@ -1,10 +1,11 @@
 import pymysql
 import datetime
+import data
 
 conn = pymysql.connect(
-    user='root',
-    password='lisai430094',
-    database='user'
+    user=data.database_user,
+    password=data.database_password,
+    database=data.database_table
 )
 cursor = conn.cursor()
 
