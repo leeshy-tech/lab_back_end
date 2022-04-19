@@ -10,28 +10,28 @@ conn = pymysql.connect(
 cursor = conn.cursor()
 
 def select_user(id,key)->str:
-    sql_select_id = f"select {key} from users_info \
-        where id={id}"
+    sql_select_id = f"select {key} from users_info where id={id}"
     cursor.execute(sql_select_id)
     res = cursor.fetchone()
     return res
 
 def select_record(id):
-    sql_select_record_byId = f"select ISBN,number,record_time,operation \
-        from record where user_id={id}"
+    sql_select_record_byId = f"select ISBN,record_time,operation from record where user_id={id}"
     cursor.execute(sql_select_record_byId)
     res = cursor.fetchall()
-    record_array = []
+    record_list = []
 
     if res:
         for record_sql in res:
             record_dict = {}
+            book_detail = select_book_detail(record_sql[0])
+            record_dict['cover_img'] = book_detail[2]
+            record_dict['name'] = book_detail[3]
             record_dict['ISBN'] = record_sql[0]
-            record_dict['number'] = record_sql[1]
-            record_dict['record_time'] = record_sql[2].strftime('%Y-%m-%d %H:%M:%S')
-            record_dict['operation'] = record_sql[3]
-            record_array.append(record_dict)       
-    return record_array
+            record_dict['record_time'] = record_sql[1].strftime('%Y-%m-%d %H:%M:%S')
+            record_dict['operation'] = record_sql[2]
+            record_list.append(record_dict)       
+    return record_list
 
 def select_books_info():
     sql_select_books_info = "select *from books_info;"
@@ -50,3 +50,20 @@ def select_book_store(ISBN):
     cursor.execute(sql_select_book_store)
     res = cursor.fetchall()
     return res
+
+def select_book_state(ISBN,number):
+    sql_select_book_state = f'select state from books_list where ISBN="{ISBN}" and number = {number}'
+    cursor.execute(sql_select_book_state)
+    res = cursor.fetchone()
+    return res[0]
+
+def insert_record(ISBN,number,id,operation):
+    time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    sql_insert_record = f'insert into record values ("{ISBN}",{number},{id},"{time}","{operation}")'
+    cursor.execute(sql_insert_record)
+    # 如果是还书，就把之前的借书记录删掉。
+    if operation == "还":
+        sql_delete_record = f'delete from record where (ISBN = "{ISBN}" and number = {number} and user_id = {id} and operation = "借")'
+        cursor.execute(sql_delete_record)
+    conn.commit()
+    return None

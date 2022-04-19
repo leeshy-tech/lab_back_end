@@ -33,16 +33,16 @@ def user_login():
             "msg":msg,
             "token":token
         }
-        return jsonify(response_msg)
+        return response_msg
 
 """
 获取用户信息：账号、类型、头像和借阅记录
 in:token
 out:response_msg
 """
-@app.route('/user/info',methods=['POST'])
+@app.route('/user/info',methods=['GET'])
 def get_info():
-    if request.method == "POST":
+    if request.method == "GET":
         token = request.headers["token"]
         msg = ""
         user_type = None
@@ -50,8 +50,8 @@ def get_info():
         lend_record = None
         try:
             id = token_decode(token)
-            user_type,img_url = database.select_user(id,"type,headphoto")
-            #lend_record = database.select_record(id)
+            user_name,img_url = database.select_user(id,"name,headphoto")
+            lend_record = database.select_record(id)
             msg = "success"
         except:
             msg = "token error"
@@ -59,12 +59,12 @@ def get_info():
         response_msg = {
             "msg":msg,
             "id":id,
-            "user_type":user_type,
-            "img_url":img_url
-            #"lend_record":lend_record
+            "user_name":user_name,
+            "img_url":img_url,
+            "lend_record":lend_record
         } 
         
-        return jsonify(response_msg)
+        return response_msg
 """
 图书推荐
 GET
@@ -258,6 +258,44 @@ def search_book_category():
             "book_info_list":book_info_list
         }
         return response_msg
+
+"""
+借还书
+POST
+in:ISBN,number,operation,token
+"""
+@app.route('/book/lend',methods=['POST'])
+def lend_book():
+    if request.method == "POST":
+        msg = None
+        token = request.headers["token"]
+        ISBN = request.json.get("ISBN")
+        number = request.json.get("number")
+        operation = request.json.get("operation")
+
+        try:
+            id = token_decode(token)
+        except:
+            msg == "token error"
+            return msg
+
+        book_state = database.select_book_state(ISBN, number)
+        if operation == "借":
+            if book_state == "借出":
+                msg = "书籍已借出"
+            elif book_state =="可借":
+                msg = "借书成功"
+        elif operation == "还":
+            if book_state == "借出":
+                msg = "还书成功"
+            elif book_state =="可借":
+                msg = "书籍未借出，不可还"
+        if msg == "借书成功" or msg == "还书成功":
+            try:
+                database.insert_record(ISBN, number, id, operation)
+            except:
+                msg = "database error"
+        return msg
 
 
 if __name__ == "__main__":
