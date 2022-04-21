@@ -16,7 +16,7 @@ def select_user(id,key)->str:
     return res
 
 def select_record(id):
-    sql_select_record_byId = f"select ISBN,record_time,operation from record where user_id={id}"
+    sql_select_record_byId = f"select ISBN,number,record_time,operation from record where user_id={id}"
     cursor.execute(sql_select_record_byId)
     res = cursor.fetchall()
     record_list = []
@@ -28,8 +28,9 @@ def select_record(id):
             record_dict['cover_img'] = book_detail[2]
             record_dict['name'] = book_detail[3]
             record_dict['ISBN'] = record_sql[0]
-            record_dict['record_time'] = record_sql[1].strftime('%Y-%m-%d %H:%M:%S')
-            record_dict['operation'] = record_sql[2]
+            record_dict['number'] = record_sql[1]
+            record_dict['record_time'] = record_sql[2].strftime('%Y-%m-%d %H:%M:%S')
+            record_dict['operation'] = record_sql[3]
             record_list.append(record_dict)       
     return record_list
 
