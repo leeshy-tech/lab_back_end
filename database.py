@@ -30,7 +30,10 @@ def select_record(id):
             record_dict['ISBN'] = record_sql[0]
             record_dict['number'] = record_sql[1]
             record_dict['record_time'] = record_sql[2].strftime('%Y-%m-%d %H:%M:%S')
-            record_dict['estimated_return_time'] = record_sql[3].strftime('%Y-%m-%d %H:%M:%S')
+            if record_sql[3] == None:
+                record_dict['estimated_return_time'] = record_sql[3]
+            else:
+                record_dict['estimated_return_time'] = record_sql[3].strftime('%Y-%m-%d %H:%M:%S')
             record_dict['operation'] = record_sql[4]
             record_list.append(record_dict)       
     return record_list
