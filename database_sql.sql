@@ -78,6 +78,7 @@ create table record(
     number int not null,
     user_id int not null,
     record_time datetime not null,
+    estimated_return_time datetime,
     operation varchar(10) not null check(operation='借' or operation='还'),
     foreign key (ISBN,number) references books_list (ISBN,number),
     foreign key (user_id) references users_info (id)   
@@ -93,7 +94,3 @@ update books_list set state='可借' where ISBN=new.ISBN and number=new.number;
 end if;
 end $$ 
 delimiter ;
-
-insert into record values
-("978-7-03-025415-3",0,2019210774,'2008-08-08 08:08:08','借'),
-("978-7-03-025415-3",1,2019210774,'2008-08-08 08:08:08','借');

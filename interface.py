@@ -284,17 +284,21 @@ def lend_book():
             if book_state == "借出":
                 msg = "书籍已借出"
             elif book_state =="可借":
+                database.insert_lend_record(ISBN, number, id)
                 msg = "借书成功"
         elif operation == "还":
             if book_state == "借出":
+                database.insert_return_record(ISBN, number, id)
                 msg = "还书成功"
             elif book_state =="可借":
                 msg = "书籍未借出，不可还"
-        if msg == "借书成功" or msg == "还书成功":
-            try:
-                database.insert_record(ISBN, number, id, operation)
-            except:
-                msg = "database error"
+        elif operation=="续":
+            if book_state == "借出":
+                database.renew_book(ISBN, number, id)
+                msg = "续借成功"
+            elif book_state =="可借":
+                msg = "书籍未借出，不可续借"
+                
         return msg
 
 

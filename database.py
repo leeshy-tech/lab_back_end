@@ -57,13 +57,35 @@ def select_book_state(ISBN,number):
     res = cursor.fetchone()
     return res[0]
 
-def insert_record(ISBN,number,id,operation):
-    time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    sql_insert_record = f'insert into record values ("{ISBN}",{number},{id},"{time}","{operation}")'
+def insert_lend_record(ISBN,number,id):
+    now = datetime.datetime.now()
+    return_time = now + datetime.timedelta(days=30)
+
+    now_str = now.strftime('%Y-%m-%d %H:%M:%S')
+    return_time_str = return_time.strftime('%Y-%m-%d %H:%M:%S')
+    sql_insert_record = f'insert into record values ("{ISBN}",{number},{id},"{now_str}","{return_time_str}","借")'
     cursor.execute(sql_insert_record)
-    # 如果是还书，就把之前的借书记录删掉。
-    if operation == "还":
-        sql_delete_record = f'delete from record where (ISBN = "{ISBN}" and number = {number} and user_id = {id} and operation = "借")'
-        cursor.execute(sql_delete_record)
+    conn.commit()
+    return None
+
+def insert_return_record(ISBN,number,id):
+    now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    sql_insert_record = f'insert into record (ISBN,number,user_id,record_time,operation) values ("{ISBN}",{number},{id},"{now}","还")'
+    cursor.execute(sql_insert_record)
+    # 把之前的借书记录删掉。
+    sql_delete_record = f'delete from record where (ISBN = "{ISBN}" and number = {number} and user_id = {id} and operation = "借")'
+    cursor.execute(sql_delete_record)
+    conn.commit()
+    return None
+# 续借一本书，将其预计归还时间+30 day
+def renew_book(ISBN,number,id):
+    sql_select_lend_record = f'select estimated_return_time from record \
+        where (ISBN = "{ISBN}" and number = {number} and user_id = {id} and operation = "借")'
+    cursor.execute(sql_select_lend_record)
+    res = cursor.fetchone()
+    estimated_return_time = (res[0] + datetime.timedelta(days=30)).strftime('%Y-%m-%d %H:%M:%S')
+    sql_update_lend_record = f'update record set estimated_return_time="{estimated_return_time}"\
+        where (ISBN = "{ISBN}" and number = {number} and user_id = {id} and operation = "借")'
+    cursor.execute(sql_update_lend_record)
     conn.commit()
     return None
