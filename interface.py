@@ -10,6 +10,8 @@ app = Flask(__name__)
 CORS(app,resource=r'/*')
 """
 用户登陆
+in:id,pwd
+out:token,msg
 """
 @app.route('/user/login',methods=['POST'])
 def user_login():
@@ -29,6 +31,7 @@ def user_login():
         except:
             msg = "id not exist"
 
+        print(id + msg)
         response_msg = {
             "msg":msg,
             "token":token
@@ -48,14 +51,16 @@ def get_info():
         user_type = None
         img_url = None
         lend_record = None
+        id = None
         try:
             id = token_decode(token)
             user_name,img_url = database.select_user(id,"name,headphoto")
             lend_record = database.select_record(id)
-            msg = "success"
+            msg = "get info success"
         except:
             msg = "token error"
 
+        print(id + msg)
         response_msg = {
             "msg":msg,
             "id":id,
@@ -88,7 +93,7 @@ def get_books():
                     "can_borrow": books[7]
                 }
                 book_info_list.append(book)
-            msg = "success"
+            msg = "recommend success"
         except:
             msg = "error"
         response_msg = {
@@ -121,7 +126,7 @@ def get_book_detail():
             "can_borrow": book_detail[7]
         }
         book_info_list.append(book)
-        msg = "success"
+        msg = "get detail success"
         response_msg = {
             "msg":msg,
             "book_info_list":book_info_list
@@ -148,7 +153,7 @@ def get_book_store():
                     "state":book_store[2]
                 }
                 books_store.append(book_store_set)
-            msg = "success"
+            msg = "get store success"
         except:
             msg = "error"
         response_msg = {
@@ -178,7 +183,7 @@ def get_book_category():
                 for (id,category2) in category2_list:
                     category12["category2"].append(category2)
                 book_category.append(category12)
-            msg = "success"
+            msg = "get category success"
 
         except:
             msg = "error"
@@ -214,7 +219,7 @@ def search_book():
                     "can_borrow": books[7]
                 }
                 book_info_list.append(book)
-        msg = "success"
+        msg = "search success"
         response_msg = {
             "msg":msg,
             "book_info_list":book_info_list
@@ -252,7 +257,7 @@ def search_book_category():
                     "can_borrow": books[7]
                 }
                 book_info_list.append(book)
-        msg = "success"
+        msg = "search category success"
         response_msg = {
             "msg":msg,
             "book_info_list":book_info_list
@@ -278,7 +283,7 @@ def lend_book():
         except:
             msg == "token error"
             return msg
-
+        print(f"id:{id} {operation} book:{ISBN} number:{number}")
         book_state = database.select_book_state(ISBN, number)
         if operation == "借":
             if book_state == "借出":

@@ -3,6 +3,7 @@ drop database user;
 create database user;
 use user;
 
+/* 用户账号信息表 */
 create table users_info(
     id int not null primary key,
     pwd varchar(20) not null,
@@ -14,6 +15,7 @@ insert into users_info values
 (2019210774,'lisai','user','http://124.223.167.22:8080/pictures/1.jpg'),
 (2019000774,'admin','admin','http://124.223.167.22:8080/pictures/2.jpg');
 
+/* 图书类别表 */
 create table books_info(
     ISBN varchar(30) primary key,
     category varchar(10),
@@ -27,9 +29,10 @@ create table books_info(
 
 insert into books_info (ISBN,category,cover_img,name,press,author)values
 ("978-7-03-025415-3","TN","http://124.223.167.22:8080/pictures/book/dsp.png","数字信号处理","科学出版社","门爱东,苏菲"),
-("978-7-04-039663-8","TN","http://124.223.167.22:8080/pictures/book/高等数学第七版.jpg","高等数学第七版","同济大学出版社","同济大学数学系"),
-("978-7-56-354427-1","01","http://124.223.167.22:8080/pictures/book/通信原理.jpg","通信原理","北邮出版社","周炯槃");
+("978-7-04-039663-8","01","http://124.223.167.22:8080/pictures/book/高等数学第七版.jpg","高等数学第七版","同济大学出版社","同济大学数学系"),
+("978-7-56-354427-1","TN","http://124.223.167.22:8080/pictures/book/通信原理.jpg","通信原理","北邮出版社","周炯槃");
 
+/* 图书表 */
 create table books_list(
     ISBN varchar(30) not null ,
     number int,
@@ -39,7 +42,11 @@ create table books_list(
     primary key(ISBN,number),
     foreign key(ISBN) references books_info(ISBN)
 );
-
+/* 触发器
+1 插入新的书籍时，自动累加其编号
+2 插入新的书籍时，更新类别表的可借和馆藏数
+3 更新书籍表时，更新类别表的可借和馆藏数
+ */
 delimiter $$
 create trigger trigger_insert_blist before insert on books_list for each row
 begin
@@ -73,6 +80,7 @@ insert into books_list (ISBN,lib,shelf,state)values
 ("978-7-03-025415-3",'西土城图书馆','1','可借'),
 ("978-7-03-025415-3",'西土城图书馆','1','可借');
 
+/* 借还书记录表 */
 create table record(
     ISBN varchar(30) not null,
     number int not null,
@@ -84,6 +92,7 @@ create table record(
     foreign key (user_id) references users_info (id)   
 );	
 
+/* 触发器：插入借还书记录时，更新该书籍的借阅状态 */
 delimiter $$
 create trigger trigger_insert_record after insert on record for each row
 begin
