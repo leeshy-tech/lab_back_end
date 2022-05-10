@@ -29,7 +29,7 @@ create table books_info(
 
 insert into books_info (ISBN,category,cover_img,name,press,author)values
 ("978-7-03-025415-3","TN","http://124.223.167.22:8080/pictures/book/dsp.png","数字信号处理","科学出版社","门爱东,苏菲"),
-("978-7-04-039663-8","01","http://124.223.167.22:8080/pictures/book/高等数学第七版.jpg","高等数学第七版","同济大学出版社","同济大学数学系"),
+("978-7-04-039663-8","O1","http://124.223.167.22:8080/pictures/book/高等数学第七版.jpg","高等数学第七版","同济大学出版社","同济大学数学系"),
 ("978-7-56-354427-1","TN","http://124.223.167.22:8080/pictures/book/通信原理.jpg","通信原理","北邮出版社","周炯槃");
 
 /* 图书表 */
