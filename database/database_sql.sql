@@ -1,5 +1,5 @@
 /* 避免乱码：mysql -u root -p --default-character-set=utf8 */
-drop database user;
+drop database if exists user;
 create database user;
 use user;
 
