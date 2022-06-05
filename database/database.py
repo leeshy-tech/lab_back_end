@@ -1,6 +1,6 @@
 import pymysql
 import datetime
-import data
+from data import data
 
 conn = pymysql.connect(
     user=data.database_user,

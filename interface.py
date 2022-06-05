@@ -1,10 +1,11 @@
 from flask import Flask,request,jsonify
 from flask_cors import CORS
 from gevent import pywsgi
-import database
-from aToken import token_encode,token_decode
-import data
-
+import sys
+from utils.aToken import token_encode,token_decode
+from database.init_database import init_tables,insert_books
+from database import database
+from data import data
 port = 9900
 app = Flask(__name__)
 CORS(app,resource=r'/*')
@@ -317,6 +318,13 @@ def lend_book():
 
 
 if __name__ == "__main__":
+
+    # 使用参数-i来初始化数据库
+    if "-i" in sys.argv:
+        init_tables()
+        insert_books()
+
+    print(f"start sever in port {port}")    
     server = pywsgi.WSGIServer(('0.0.0.0',port),app)
     server.serve_forever()
     print("end")

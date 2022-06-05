@@ -1,16 +1,17 @@
 import json
-import data
-import database
+import sys
 import random
 import os
+from data import data
+from database import database
 
 def init_tables():
     # 下面这条命令在win的powershell报错，cmd正常
-    os.system(f"mysql -u{data.database_user} -p{data.database_password} --default-character-set=utf8 < database_sql.sql")
+    os.system(f"mysql -u{data.database_user} -p{data.database_password} --default-character-set=utf8 < database/database_sql.sql")
     print("init tables")
 
 def insert_books():
-    with open('book.json','r',encoding='utf-8') as f:
+    with open('data/book.json','r',encoding='utf-8') as f:
         book_list = list(json.load(f))
         for book in book_list:
             # 插入 book_detail 表
@@ -30,8 +31,4 @@ def insert_books():
             database.insert_book_list(book1)
             database.insert_book_list(book2)
     
-    print("insert ")
-        
-if __name__=="__main__":
-    init_tables()
-    insert_books()
+    print("insert book data")

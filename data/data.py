@@ -1,5 +1,5 @@
 database_user = "root"
-database_password = "123456"
+database_password = "lisai430094"
 database_table = "user"
 
 # 中国图书馆分类法
