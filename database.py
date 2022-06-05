@@ -50,6 +50,20 @@ def select_book_detail(ISBN):
     res = cursor.fetchone()
     return res
 
+def insert_book_detail(book):
+    book_str = f'("{book["ISBN"]}","{book["category"]}","{book["cover_img"]}","{book["name"]}","{book["press"]}","{book["author"]}")'
+    sql_insert_book_detail = "insert into books_info (ISBN,category,cover_img,name,press,author)values" + book_str
+    cursor.execute(sql_insert_book_detail)
+    conn.commit()
+    return None
+
+def insert_book_list(book):
+    book_str = f'("{book["ISBN"]}","{book["lib"]}","{book["shelf"]}","可借")'
+    sql_insert_book_list = "insert into books_list (ISBN,lib,shelf,state)values" + book_str
+    cursor.execute(sql_insert_book_list)
+    conn.commit()
+    return None
+
 def select_book_store(ISBN):
     sql_select_book_store = f'select lib,shelf,state from books_list where ISBN="{ISBN}"'
     cursor.execute(sql_select_book_store)

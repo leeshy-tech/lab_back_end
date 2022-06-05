@@ -20,7 +20,7 @@ create table books_info(
     ISBN varchar(30) primary key,
     category varchar(10),
     cover_img varchar(100),
-    name varchar(20),
+    name varchar(40),
     press varchar(20),
     author varchar(20),
     collection int default 0,
@@ -28,9 +28,9 @@ create table books_info(
 );	
 
 insert into books_info (ISBN,category,cover_img,name,press,author)values
-("978-7-03-025415-3","TN","http://124.223.167.22:8080/pictures/book/dsp.png","数字信号处理","科学出版社","门爱东,苏菲"),
-("978-7-04-039663-8","O1","http://124.223.167.22:8080/pictures/book/高等数学第七版.jpg","高等数学第七版","同济大学出版社","同济大学数学系"),
-("978-7-56-354427-1","TN","http://124.223.167.22:8080/pictures/book/通信原理.jpg","通信原理","北邮出版社","周炯槃");
+("9787030254153","TN","http://124.223.167.22:8080/pictures/book/dsp.png","数字信号处理","科学出版社","门爱东,苏菲"),
+("9787040396638","O1","http://124.223.167.22:8080/pictures/book/高等数学第七版.jpg","高等数学第七版","同济大学出版社","同济大学数学系"),
+("9787563544271","TN","http://124.223.167.22:8080/pictures/book/通信原理.jpg","通信原理","北邮出版社","周炯槃");
 
 /* 图书表 */
 create table books_list(
@@ -77,8 +77,8 @@ end $$
 delimiter ;
 
 insert into books_list (ISBN,lib,shelf,state)values
-("978-7-03-025415-3",'西土城图书馆','1','可借'),
-("978-7-03-025415-3",'西土城图书馆','1','可借');
+("9787030254153",'西土城图书馆','1','可借'),
+("9787030254153",'西土城图书馆','1','可借');
 
 /* 借还书记录表 */
 create table record(
