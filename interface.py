@@ -5,16 +5,17 @@ import database
 from aToken import token_encode,token_decode
 import data
 
-port = 8899
+port = 9900
 app = Flask(__name__)
 CORS(app,resource=r'/*')
-"""
-用户登陆
-in:id,pwd
-out:token,msg
-"""
+
 @app.route('/user/login',methods=['POST'])
 def user_login():
+    """
+    用户登陆
+    in:id,pwd
+    out:token,msg
+    """
     if request.method == "POST":
         id = request.json.get("user_id")
         pwd = request.json.get("user_pwd")
@@ -38,13 +39,13 @@ def user_login():
         }
         return response_msg
 
-"""
-获取用户信息：账号、类型、头像和借阅记录
-in:token
-out:response_msg
-"""
 @app.route('/user/info',methods=['GET'])
 def get_info():
+    """
+    获取用户信息：账号、类型、头像和借阅记录
+    in:token
+    out:response_msg
+    """
     if request.method == "GET":
         token = request.headers["token"]
         msg = ""
@@ -70,45 +71,51 @@ def get_info():
         } 
         
         return response_msg
-"""
-图书推荐
-GET
-"""
-@app.route('/book/recommended',methods=['GET'])
-def get_books():
-    if request.method == "GET":
-        msg = None
-        book_info_list = []
-        try:
-            books_info_list = database.select_books_info()
-            for books in books_info_list:
-                book = {
-                    "ISBN": books[0],
-                    "category":books[1],
-                    "cover_img": books[2],
-                    "name": books[3],
-                    "press": books[4],
-                    "author": books[5],
-                    "collection": books[6],
-                    "can_borrow": books[7]
-                }
-                book_info_list.append(book)
-            msg = "recommend success"
-        except:
-            msg = "error"
-        response_msg = {
-            "msg":msg,
-            "book_info_list":book_info_list
-        }
-        return response_msg
 
-"""
-获取书籍详细信息
-POST
-in:ISBN
-"""
+@app.route('/book/recommended',methods=['GET','POST'])
+def get_books():
+    """
+    图书推荐
+    返回5个书籍信息
+    in:index(int or None)
+    GET POST
+    """
+    msg = None
+    book_info_list = []
+    if request.method == "GET":
+        index = 0
+    else:
+        index = int(request.json.get("index"))
+    try:
+        books_info_list = database.select_books_info()
+        for books in books_info_list[index:index+5]:
+            book = {
+                "ISBN": books[0],
+                "category":books[1],
+                "cover_img": books[2],
+                "name": books[3],
+                "press": books[4],
+                "author": books[5],
+                "collection": books[6],
+                "can_borrow": books[7]
+            }
+            book_info_list.append(book)
+        msg = "recommend success"
+    except:
+        msg = "error"
+    response_msg = {
+        "msg":msg,
+        "book_info_list":book_info_list
+    }
+    return response_msg
+
 @app.route('/book/detail',methods=['POST'])
 def get_book_detail():
+    """
+    获取书籍详细信息
+    POST
+    in:ISBN
+    """
     if request.method == "POST":
         ISBN = request.json.get("ISBN")
         msg = None
@@ -133,13 +140,13 @@ def get_book_detail():
         }
         return response_msg
 
-"""
-获取馆藏信息
-POST
-in:ISBN
-"""
 @app.route('/book/store',methods=['POST'])
 def get_book_store():
+    """
+    获取馆藏信息
+    POST
+    in:ISBN
+    """
     if request.method == "POST":
         ISBN = request.json.get("ISBN")
         msg = None
@@ -162,12 +169,12 @@ def get_book_store():
         }
         return response_msg
 
-"""
-获取书籍分类
-GET
-"""
 @app.route('/book/category',methods=['GET'])
 def get_book_category():
+    """
+    获取书籍分类
+    GET
+    """
     if request.method == "GET":
         msg = None
         book_category = []  
@@ -193,13 +200,14 @@ def get_book_category():
             "book_category":book_category
         }
         return response_msg
-"""
-关键字搜索
-POST
-in:keyword
-"""
+
 @app.route('/book/search',methods=['POST'])
 def search_book():
+    """
+    关键字搜索
+    POST
+    in:keyword
+    """
     if request.method == "POST":
         keyword = request.json.get("keyword")
         print("keyword=" + keyword)
@@ -225,13 +233,14 @@ def search_book():
             "book_info_list":book_info_list
         }
         return response_msg
-"""
-分类搜索
-POST
-in:category
-"""
+
 @app.route('/book/search_category',methods=['POST'])
 def search_book_category():
+    """
+    分类搜索
+    POST
+    in:category
+    """
     if request.method == "POST":
         category = request.json.get("category")
         print("category=" + category)
@@ -264,13 +273,13 @@ def search_book_category():
         }
         return response_msg
 
-"""
-借还书
-POST
-in:ISBN,number,operation,token
-"""
 @app.route('/book/lend',methods=['POST'])
 def lend_book():
+    """
+    借还书
+    POST
+    in:ISBN,number,operation,token
+    """
     if request.method == "POST":
         msg = None
         token = request.headers["token"]
