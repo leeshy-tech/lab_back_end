@@ -21,7 +21,7 @@
 - 在data.py中修改数据库名称、密码
 
 ### 运行
-- 运行并初始化数据库： `python init_database.py -i`
+- 运行并初始化数据库： `python interface.py -i`
 - 或：`python interface.py`  
 
 如果是windows，需要在cmd而不是powershell运行，否则会报错。
