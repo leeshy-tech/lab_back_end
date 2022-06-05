@@ -18,9 +18,11 @@ aToken.py：Token的加密和解密
 - 在data.py中修改数据库名称、密码
 
 ### 运行
-- 第一次运行： `python init_database.py`
-- `python interface.py`
+- 运行并初始化数据库： `python init_database.py -i`
+- 或：`python interface.py`  
 
+
+如果是windows，需要在cmd而不是powershell运行，否则会报错。
 ### 访问
 使用url：`http://<IP>:<port><route>`访问接口  
 请求体使用json格式
