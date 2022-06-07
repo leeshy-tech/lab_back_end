@@ -1,5 +1,5 @@
 '''
-token生成模块
+token编码和解码模块
 '''
 import jwt
 
@@ -11,8 +11,8 @@ headers = {
 # 密钥
 SECRET_KEY = "leeshy"
 
-'''生成一个token'''
 def token_encode(user_id) -> str:
+    '''编码token'''
     if user_id:
         payload = {
             "user_id":user_id
@@ -22,8 +22,8 @@ def token_encode(user_id) -> str:
     else:
         return None
 
-'''解码token'''
 def token_decode(token) -> str:
+    '''解码token'''
     payload = jwt.decode(jwt=token,key=SECRET_KEY,verify=False,algorithms='HS256')
     info = payload["user_id"]
     return info

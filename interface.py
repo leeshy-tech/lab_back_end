@@ -3,6 +3,7 @@ from flask_cors import CORS
 from gevent import pywsgi
 import sys
 from utils.aToken import token_encode,token_decode
+from utils.keyword_search import search_by_keyword
 from database.init_database import init_tables,insert_books
 from database import database
 from data import data
@@ -213,25 +214,37 @@ def search_book():
         keyword = request.json.get("keyword")
         print("keyword=" + keyword)
         msg = None
-        book_info_list = []
-        books_info_list = database.select_books_info()
-        for books in books_info_list:
-            if books[3] == keyword:
-                book = {
-                    "ISBN": books[0],
-                    "category":books[1],
-                    "cover_img": books[2],
-                    "name": books[3],
-                    "press": books[4],
-                    "author": books[5],
-                    "collection": books[6],
-                    "can_borrow": books[7]
-                }
-                book_info_list.append(book)
+        search_result = []
+        
+        book_info_list = database.select_books_info()
+        # 数据库查询的结果是一个元组，不是dict
+        book_dict_list = []
+        for book_info in book_info_list:
+            book = {
+                "ISBN":book_info[0],
+                "name":book_info[3]
+            }
+            book_dict_list.append(book)
+        # 搜索
+        ISBN_list = search_by_keyword(keyword,book_dict_list)
+        # 构造返回数据
+        for ISBN in ISBN_list:
+            book_detail = database.select_book_detail(ISBN)
+            book = {
+                "ISBN": book_detail[0],
+                "category":book_detail[1],
+                "cover_img": book_detail[2],
+                "name": book_detail[3],
+                "press": book_detail[4],
+                "author": book_detail[5],
+                "collection": book_detail[6],
+                "can_borrow": book_detail[7]
+            }
+            search_result.append(book)
         msg = "search success"
         response_msg = {
             "msg":msg,
-            "book_info_list":book_info_list
+            "book_info_list":search_result
         }
         return response_msg
 
