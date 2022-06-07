@@ -11,7 +11,8 @@
 │  ├─ database.py：集成一些数据库操作
 │  └─ database_sql.sql：sql脚本，初始化数据库中的表和触发器
 └─ utils
-   └─aToken.py：Token的加密和解密
+   ├─ keyword_search.py：关键词搜索
+   └─ aToken.py：Token的加密和解密
 ```
 ## 运行项目
 ### 准备
