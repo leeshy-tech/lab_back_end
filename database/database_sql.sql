@@ -1,7 +1,7 @@
 /* 避免乱码：mysql -u root -p --default-character-set=utf8 */
-drop database if exists user;
-create database user;
-use user;
+drop database if exists library;
+create database library;
+use library;
 
 /* 用户账号信息表 */
 create table users_info(

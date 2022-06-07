@@ -1,6 +1,6 @@
 database_user = "root"
 database_password = "123456"
-database_table = "user"
+database_table = "library"
 
 # 中国图书馆分类法
 category = {
